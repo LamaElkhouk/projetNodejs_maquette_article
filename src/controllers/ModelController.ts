@@ -56,9 +56,15 @@ class Model{
             if(exist_model){
                 return res.json({message:"ce model existe déjà"})
             }else{
-                  //si il existe pas 
-                this.models.push(model)
-                res.json({data:model,message:`model ${model.title} created`})
+                  //si il existe pas et que le user n'est pas bani
+                if(Connexion.userConnected.banned==false){
+                    this.models.push(model)
+                    res.json({data:model,message:`model ${model.title} created`})
+
+                }else{
+                    res.json({message:`this user can't post models because he is banned..`})
+                }
+                
             }
         }
 

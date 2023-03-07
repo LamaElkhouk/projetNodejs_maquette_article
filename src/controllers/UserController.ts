@@ -60,6 +60,23 @@ class User{
         })
         res.json({message:"user deleted!"})
     }
+    public banUser = (req:Request,res:Response)=>{
+        const id = req.params.id
+        const exist_user = this.users.find(user=>{
+            if(id===user.id){
+                return user 
+            }
+        })
+
+        if(exist_user){
+            exist_user.banned=true
+            return res.json({data:exist_user,message:"this user is banned"})
+        }else{
+            res.json({message:`this user doesn't exist...`})
+        }
+
+
+    }
     public updateUser= (req:Request,res:Response)=>{
         const id = req.params.id
         const user = this.users.find(user=>{
