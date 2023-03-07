@@ -10,16 +10,16 @@ class Model{
 
     models:IModel[]= [
         
-        {id:crypto.randomUUID(),url : "url vers le fichier",title:"model 1 ",nom_artiste:"artiste 1",approval:[{ id:"1",
+        {id:crypto.randomUUID(),url : "url vers le fichier",title:"model 1 ",nom_artiste:"artiste 1",final_validation:true,approval:[{ id:"1",
                                                                                                                 commentaire: " commentaire",
                                                                                                                 validated:true,
                                                                                                                 nom_manager:"manager 1"}]
         },
-        {id:crypto.randomUUID(),url : "url vers le fichier",title:"model 2 ",nom_artiste:"artiste 2",approval:[{ id:"1",
+        {id:crypto.randomUUID(),url : "url vers le fichier",title:"model 2 ",nom_artiste:"artiste 2",final_validation:true, approval:[{ id:"1",
                                                                                                                 commentaire: " commentaire",
                                                                                                                 validated:true,
                                                                                                                 nom_manager:"manager 1"}]},
-        {id:crypto.randomUUID(),url : "url vers le fichier",title:"model 3 ",nom_artiste:"artiste 3",approval:[{ id:"1",
+        {id:crypto.randomUUID(),url : "url vers le fichier",title:"model 3 ",nom_artiste:"artiste 3",final_validation:true, approval:[{ id:"1",
                                                                                                                 commentaire: " commentaire",
                                                                                                                 validated:true,
                                                                                                                 nom_manager:"manager 1"}]},
@@ -39,8 +39,8 @@ class Model{
             url : req.body.url,
             title:req.body.title,
             nom_artiste:Connexion.userConnected.username,
-            approval:req.body.approval
-        }
+            approval:req.body.approval,
+            final_validation:req.body.final_validation       }
         console.log(model)
 
         if(!model.url || !model.title|| !model.nom_artiste || !model.approval){
@@ -90,7 +90,7 @@ class Model{
         }) as IModel
 
             if(exist_model){
-                //di le model existe , on peut lui ajouter une/plusieurs approbation(s)
+                //si le model existe , on peut lui ajouter une/plusieurs approbation(s)
 
                 exist_model.approval.push(approval) //on ajoute l'approbation au model
                 Approval.approvals.push(approval) //on ajoute l'approbation a la table approbations
@@ -103,6 +103,42 @@ class Model{
             }
         
     }
+    public validatedModel=(req:Request,res:Response)=>{
+        const id = req.params.id
+        const exist_model = this.models.find(model=>{
+            if(id===model.id){
+                return model
+            }
+        }) as IModel
+
+        if(exist_model){
+            //si le model existe , on regarde le nombre de validations positif et negatif
+            const nb_validation_positif=[]
+            const nb_validation_negatif=[]
+
+            exist_model.approval.map((a)=>{
+                if(a.validated===false){
+                    nb_validation_negatif.push(a.validated)
+                }else{
+                    nb_validation_positif.push(a.validated)
+                }
+            })
+            
+            if(nb_validation_negatif.length>nb_validation_positif.length){ //plus d'avis negatif que positif
+                exist_model.final_validation=false
+            }else{
+                exist_model.final_validation=true                  //plus d'avis positif que negatif
+            }
+
+            res.json({data:exist_model,message:`validation final : ${exist_model.final_validation}`})
+
+        }else{
+              //si il existe pas 
+            res.json({message:`this model doesn't exist ..`})
+        }
+    }
+
+
     public deleteModel= (req:Request,res:Response)=>{
         const id =req.params.id
         this.models = this.models.filter(model=>{

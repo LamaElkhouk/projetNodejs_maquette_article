@@ -12,7 +12,7 @@ class User{
     ];
 
     public getAllUser= (req:Request,res:Response)=>{    
-        return res.send({
+        return res.json({
             message:"all users",
             data:this.users
         })
