@@ -55,10 +55,10 @@ class User{
         const id =req.params.id
         this.users = this.users.filter(user=>{
             if(id!==user.id){
-                res.json({message:"user deleted!"})
                 return user
             }
         })
+        res.json({message:"user deleted!"})
     }
     public updateUser= (req:Request,res:Response)=>{
         const id = req.params.id
