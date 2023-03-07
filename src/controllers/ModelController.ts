@@ -3,6 +3,7 @@ import {IModel} from "../models/IModel"
 import {IApproval} from "../models/IApproval"
 import {Response, Request} from "express"
 import Connexion from "../controllers/ConnexionController"
+import Approval from "../controllers/ApprovalController"
 import * as crypto from "crypto"
 
 class Model{
@@ -85,7 +86,8 @@ class Model{
             if(exist_model){
                 //di le model existe , on peut lui ajouter une/plusieurs approbation(s)
 
-                exist_model.approval.push(approval)
+                exist_model.approval.push(approval) //on ajoute l'approbation au model
+                Approval.approvals.push(approval) //on ajoute l'approbation a la table approbations
 
                 res.json({data:exist_model,message:`model updated`})
 
