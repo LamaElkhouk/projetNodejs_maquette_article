@@ -1,13 +1,13 @@
-/*db.createUser(
+db.createUser(
     {
         user: 'anon',
         pwd: 'marbleCake',
         roles: [
             {
                 role: 'readWrite',
-                db: 'my_db'
+                db: 'mydb'
             }
         ]
     }
 );
-db.createCollection('users');*/
+db.createCollection('users');
