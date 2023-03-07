@@ -2,13 +2,14 @@
 import {IUser,RoleUser} from "../models/IUser"
 import {Response, Request} from "express"
 import * as crypto from "crypto"
+import bcrypt from 'bcryptjs';
 
 class User{
 
     users:IUser[]= [
-        {id:crypto.randomUUID(),email : "Admin@gmail.com",username:"Admin",password:"azerty",date_inscription:new Date("05-03-2023"),banned:false,role: RoleUser.Admin},
-        {id:crypto.randomUUID(),email : "Artiste@gmail.com",username:"Artiste",password:"azerty",date_inscription:new Date("05-03-2023"),banned:false,role: RoleUser.Artiste},
-        {id:crypto.randomUUID(),email : "Manager@gmail.com",username:"Manager",password:"azerty",date_inscription:new Date("05-03-2023"),banned:false,role: RoleUser.Manager},
+        {id:crypto.randomUUID(),email : "Admin@gmail.com",username:"Admin",password:"azerty1",date_inscription:new Date("05-03-2023"),banned:false,role: RoleUser.Admin},
+        {id:crypto.randomUUID(),email : "Artiste@gmail.com",username:"Artiste",password:"azerty2",date_inscription:new Date("05-03-2023"),banned:false,role: RoleUser.Artiste},
+        {id:crypto.randomUUID(),email : "Manager@gmail.com",username:"Manager",password:"azerty3",date_inscription:new Date("05-03-2023"),banned:false,role: RoleUser.Manager},
     ];
 
     public getAllUser= (req:Request,res:Response)=>{    
@@ -18,20 +19,22 @@ class User{
         })
     }
 
-    public createUser= (req:Request,res:Response)=>{
+    public createUser= async (req:Request,res:Response)=>{
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(req.body.password, salt);
 
         const user:IUser={
             id:crypto.randomUUID(),
             email : req.body.email,
             username:req.body.username,
-            password:req.body.password,
+            password:hashedPassword,
             date_inscription:req.body.date_inscription,
             banned:req.body.banned,
             role: req.body.role
         }
         console.log(user)
 
-        if(!req.body.email || !req.body.username|| !req.body.password || req.body.banned=== undefined || ! req.body.role){
+        if(!user.email || !user.username|| !user.password || user.banned=== undefined || ! user.role){
             res.json({message:"les données ne sont valides..."})
 
         }else{

@@ -1,4 +1,7 @@
-//const Joi = require('joi');
+
+import crypto from "crypto"
+import mongoose from "mongoose"
+
 export enum RoleUser{
     Admin = "Admin",
     Artiste="Artiste",
@@ -14,15 +17,18 @@ export interface IUser{
     role: RoleUser
 }
 
-/*
-const userSchemas = 
-
-{
-    id:crypto.randomUUID(),
-    email : Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net','fr'] } }),
-    username:Joi.string().alphanum().min(3).max(30).required(),
-    password:Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')),
-    banned:Joi.boolean(),
-    role: Joi.string().required(),
-}
+/*const UserSchema = new mongoose.Schema(
+    {
+        id: { type:crypto.randomUUID(), required: false },
+        email: { type: String, required: true ,unique:true},
+        username: { type: String , required: true , unique: true},
+        password: { type: String , required: true },
+        date_inscription:{type:Date, required: true},
+        banned:{ type: Boolean, required:true},
+        role:{ type: RoleUser, required: true}
+    },
+    { timestamps: true }
+);
 */
+
+//export default mongoose.model<IUser>('User', UserSchema);
